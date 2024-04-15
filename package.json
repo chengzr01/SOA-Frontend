@@ -3,6 +3,7 @@
   "version": "2.0.1",
   "dependencies": {
     "aws-amplify": "^6.0.28",
+    "axios": "^1.6.8",
     "bootstrap": "4.6.0",
     "react": ">=16.8.0",
     "react-bootstrap": "2.4.0",

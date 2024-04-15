@@ -1,10 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Container, Row, Col, Form, Button, ListGroup } from "react-bootstrap";
+import axios from "axios";
 
 const ChatBox = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-
+  const [information, setInformation] = useState("initial");
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -28,8 +29,19 @@ const ChatBox = () => {
     }
   };
 
+  useEffect(() => {
+    axios
+      .get("/agent")
+      .then((res) => {
+        console.log(res.data);
+        setInformation(res.data.data);
+      })
+      .then((res) => {});
+  });
+
   return (
     <>
+      {information}
       <div
         style={{
           height: "25em",
