@@ -31,7 +31,7 @@ const ChatBox = () => {
 
   useEffect(() => {
     axios
-      .get("/agent/")
+      .get("/agent")
       .then((res) => {
         console.log(res.data);
         setInformation(res.data.data);
