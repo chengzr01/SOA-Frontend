@@ -30,10 +30,15 @@ const ChatBox = () => {
   };
 
   useEffect(() => {
-    axios.get("/agent/").then((res) => {
-      console.log(res.data);
-      setInformation(res.data.data);
-    });
+    axios
+      .get("/agent/")
+      .then((res) => {
+        console.log(res.data);
+        setInformation(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   });
 
   return (
