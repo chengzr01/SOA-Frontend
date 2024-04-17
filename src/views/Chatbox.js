@@ -29,29 +29,17 @@ const ChatBox = () => {
   };
 
   const handleMessageResponse = (input) => {
-    const body = {
-      user_input: input,
-    };
-    // axios.post("/response", body).then((res) => {
-    //   console.log(res["back end response"]);
-    //   setMessages([
-    //     ...messages,
-    //     { text: res["back end response"], fromUser: false },
-    //   ]);
-    // });
-    axios.get("/agent").then((res) => {
-      console.log(res.data.data);
-      let current_messages = messages;
-      console.log(current_messages);
-      current_messages.push({ text: res.data.data, fromUser: false });
-      setMessages(current_messages);
-    });
-    setTrigger(!trigger);
+    axios
+      .post("/response/", "user_input=" + input)
+      .then((res) => {
+        console.log(res.data["back end response"][0]);
+        let new_message = res.data["back end response"][0]["job_title"];
+        setMessages([...messages, { text: new_message, fromUser: false }]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
-
-  useEffect(() => {
-    setTrigger(!trigger);
-  }, [trigger]);
 
   return (
     <>
