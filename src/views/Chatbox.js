@@ -5,7 +5,7 @@ import axios from "axios";
 const ChatBox = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [information, setInformation] = useState("initial");
+  const [trigger, setTrigger] = useState(false);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -19,31 +19,42 @@ const ChatBox = () => {
   const handleMessageSubmit = (event) => {
     event.preventDefault();
     if (message.trim() !== "") {
-      if (messages.length % 2 == 0) {
-        setMessages([...messages, { text: message, fromUser: false }]);
-      } else {
-        setMessages([...messages, { text: message, fromUser: true }]);
-      }
+      let current_messages = messages;
+      current_messages.push({ text: message, fromUser: true });
+      setMessages(current_messages);
       setMessage("");
       scrollToBottom();
+      handleMessageResponse(message);
     }
   };
 
+  const handleMessageResponse = (input) => {
+    const body = {
+      user_input: input,
+    };
+    // axios.post("/response", body).then((res) => {
+    //   console.log(res["back end response"]);
+    //   setMessages([
+    //     ...messages,
+    //     { text: res["back end response"], fromUser: false },
+    //   ]);
+    // });
+    axios.get("/agent").then((res) => {
+      console.log(res.data.data);
+      let current_messages = messages;
+      console.log(current_messages);
+      current_messages.push({ text: res.data.data, fromUser: false });
+      setMessages(current_messages);
+    });
+    setTrigger(!trigger);
+  };
+
   useEffect(() => {
-    axios
-      .get("/agent")
-      .then((res) => {
-        console.log(res.data);
-        setInformation(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  });
+    setTrigger(!trigger);
+  }, [trigger]);
 
   return (
     <>
-      {information}
       <div
         style={{
           height: "25em",

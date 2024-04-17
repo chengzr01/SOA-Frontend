@@ -7,4 +7,10 @@ module.exports = function (app) {
       changeOrigin: true,
     })
   );
+  app.use(
+    createProxyMiddleware("/response", {
+      target: "http://13.54.150.80:8000",
+      changeOrigin: true,
+    })
+  );
 };
