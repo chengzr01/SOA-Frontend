@@ -164,8 +164,8 @@ function User() {
                       className="avatar border-gray"
                       src={require("assets/img/default-avatar.png")}
                     ></img>
-                    <h5 className="title">@ziruicheng</h5>
-                    <h5>Zirui Cheng</h5>
+                    <h5 className="title">@alex</h5>
+                    <h5>Alex</h5>
                   </a>
                 </div>
                 <p className="description text-center">
