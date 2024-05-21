@@ -20,7 +20,7 @@ function Sidebar({ color, image, routes }) {
       />
       <div className="sidebar-wrapper">
         <div className="logo d-flex align-items-center justify-content-start">
-          SOA
+          Welcome!
         </div>
         <Nav>
           {routes.map((prop, key) => {

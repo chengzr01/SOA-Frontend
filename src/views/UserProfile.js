@@ -173,7 +173,7 @@ function User() {
                   <br /> Tsinghua University
                 </p>
               </Card.Body>
-              {/* <hr></hr>
+              <hr></hr>
               <div className="button-container mr-auto ml-auto">
                 <Button
                   className="btn-simple btn-icon"
@@ -199,7 +199,7 @@ function User() {
                 >
                   <i className="fab fa-google-plus-square"></i>
                 </Button>
-              </div> */}
+              </div>
             </Card>
           </Col>
         </Row>

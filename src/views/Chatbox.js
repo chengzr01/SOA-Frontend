@@ -32,8 +32,13 @@ const ChatBox = () => {
     axios
       .post("/response/", "user_input=" + input)
       .then((res) => {
-        console.log(res.data["back end response"][0]);
-        let new_message = res.data["back end response"][0]["job_title"];
+        console.log(res.data);
+        let new_message = "";
+        if (res.data["backend response"]) {
+          new_message = res.data["backend response"];
+        } else {
+          new_message = res.data["frontend response"];
+        }
         setMessages([...messages, { text: new_message, fromUser: false }]);
       })
       .catch((err) => {
