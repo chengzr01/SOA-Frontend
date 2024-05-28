@@ -3,7 +3,7 @@ import { Container, Row, Col, Form, Button, ListGroup } from "react-bootstrap";
 import axios from "axios";
 import cookie from "react-cookies";
 
-const ChatBox = () => {
+const ChatBox = ({ ready, setReady }) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [trigger, setTrigger] = useState(false);
@@ -29,24 +29,63 @@ const ChatBox = () => {
     }
   };
 
+  function getRandomItemsFromArray(array, numItems) {
+    if (array.length <= numItems) {
+      return array.slice();
+    }
+
+    const randomItems = [];
+    const indexes = Array.from(Array(array.length).keys());
+
+    for (let i = 0; i < numItems; i++) {
+      const randomIndex = Math.floor(Math.random() * indexes.length);
+      const selectedIndex = indexes[randomIndex];
+      randomItems.push(array[selectedIndex]);
+      indexes.splice(randomIndex, 1);
+    }
+
+    return randomItems;
+  }
+
   const handleMessageResponse = (input) => {
     let username = cookie.load("username");
     let email = cookie.load("email");
     let password = cookie.load("password");
-    console.log(username);
-    console.log(email);
-    console.log(password);
     axios
       .post("/response/", "user_input=" + input)
       .then((res) => {
-        console.log(res.data);
         let new_message = "";
-        if (res.data["backend response"]) {
-          new_message = res.data["backend response"];
+        console.log(res.data);
+        if (res.data["back end response"]) {
+          if (Array.isArray(res.data["back end response"])) {
+            let short_array = getRandomItemsFromArray(
+              res.data["back end response"],
+              10
+            );
+            console.log(short_array);
+            let jobString = "";
+
+            for (let i = 0; i < short_array.length; i++) {
+              jobString += `Job ${i + 1}:\n`;
+
+              for (let key in short_array[i]) {
+                jobString += `${key}: ${short_array[i][key]}\n`;
+              }
+
+              jobString += "\n";
+            }
+
+            new_message =
+              "I have found some jobs you might be interested in!\n" +
+              jobString;
+          } else {
+            new_message = "Sorry! Please try again later!";
+          }
         } else {
-          new_message = res.data["frontend response"];
+          new_message = res.data["front end response"];
         }
         setMessages([...messages, { text: new_message, fromUser: false }]);
+        setReady(true);
       })
       .catch((err) => {
         console.log(err);
@@ -77,6 +116,7 @@ const ChatBox = () => {
             <ListGroup.Item
               style={{
                 backgroundColor: msg.fromUser ? "#fdfdfd" : "#fdfdfd",
+                whiteSpace: "pre-wrap",
               }}
             >
               {msg.fromUser ? <b>User</b> : <b>Agent</b>}: {msg.text}

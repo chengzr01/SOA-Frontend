@@ -129,14 +129,20 @@ function Header() {
                 variant="default"
                 className="m-0"
               >
-                <span className="no-icon">Dropdown</span>
+                <span className="no-icon">Action</span>
               </Dropdown.Toggle>
               <Dropdown.Menu aria-labelledby="navbarDropdownMenuLink">
                 <Dropdown.Item
                   href="#pablo"
                   onClick={(e) => e.preventDefault()}
                 >
-                  Action
+                  Feedback
+                </Dropdown.Item>
+                <Dropdown.Item
+                  href="#pablo"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  About
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
