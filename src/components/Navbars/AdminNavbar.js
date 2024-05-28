@@ -214,9 +214,18 @@ function Header() {
               />
             </Form.Group>
 
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
+            <Form.Group
+              controlId="formBasicUsername"
+              style={{
+                textAlign: "center",
+                marginTop: "1em",
+                marginBottom: "1em",
+              }}
+            >
+              <Button variant="primary" type="submit">
+                Submit
+              </Button>
+            </Form.Group>
           </Form>
         </Modal.Body>
       </Modal>

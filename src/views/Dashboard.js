@@ -7,8 +7,10 @@ import { Card, Container, Row, Col } from "react-bootstrap";
 import ChatBox from "./Chatbox";
 
 function Dashboard() {
-  const [companies, setCompanies] = useState([]);
-  const [positions, setPositions] = useState([]);
+  const [visualization, setVisualization] = useState("");
+  const [summarization, setSummarization] = useState("");
+  const [recommendation, setRecommendation] = useState("");
+
   return (
     <>
       <Container fluid>
@@ -27,36 +29,28 @@ function Dashboard() {
           <Col md="4">
             <Card>
               <Card.Header>
-                <Card.Title as="h4">Recommendation</Card.Title>
+                <Card.Title as="h4">Analyze</Card.Title>
               </Card.Header>
               <Card.Body>
                 <div className="legend">
-                  <div style={{ paddingTop: "2em", paddingBottom: "2em" }}>
-                    <i>Here are 3 positions that might be suitable for you.</i>
-                  </div>
                   <Card>
                     <Card.Header>
-                      <Card.Title as="h5">Anthropic</Card.Title>
+                      <Card.Title as="h5">Visualization</Card.Title>
                     </Card.Header>
-                    <Card.Body></Card.Body>
+                    <Card.Body>{visualization}</Card.Body>
                   </Card>
                   <Card>
                     <Card.Header>
-                      <Card.Title as="h5">Microsoft Research</Card.Title>
+                      <Card.Title as="h5">Summarization</Card.Title>
                     </Card.Header>
-                    <Card.Body></Card.Body>
+                    <Card.Body>{summarization}</Card.Body>
                   </Card>
                   <Card>
                     <Card.Header>
-                      <Card.Title as="h5">Meta</Card.Title>
+                      <Card.Title as="h5">Recommendation</Card.Title>
                     </Card.Header>
-                    <Card.Body></Card.Body>
+                    <Card.Body>{recommendation}</Card.Body>
                   </Card>
-                </div>
-                <hr></hr>
-                <div className="stats">
-                  <i className="fas fa-history"></i>
-                  Updated 3 minutes ago
                 </div>
               </Card.Body>
             </Card>
