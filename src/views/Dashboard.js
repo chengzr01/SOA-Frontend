@@ -1,20 +1,7 @@
 import React from "react";
 import { useState } from "react";
 // react-bootstrap components
-import {
-  Badge,
-  Button,
-  Card,
-  Navbar,
-  Nav,
-  Table,
-  Container,
-  Row,
-  Col,
-  Form,
-  OverlayTrigger,
-  Tooltip,
-} from "react-bootstrap";
+import { Card, Container, Row, Col } from "react-bootstrap";
 
 import ChatBox from "./Chatbox";
 
