@@ -19,9 +19,6 @@ function Sidebar({ color, image, routes }) {
         }}
       />
       <div className="sidebar-wrapper">
-        <div className="logo d-flex align-items-center justify-content-start">
-          Welcome!
-        </div>
         <Nav>
           {routes.map((prop, key) => {
             if (!prop.redirect)

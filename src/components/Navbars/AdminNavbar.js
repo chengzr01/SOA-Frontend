@@ -9,18 +9,23 @@ import {
   Modal,
   Form,
 } from "react-bootstrap";
-import axios from "axios"; // Import axios for making HTTP requests
-
+import axios from "axios";
+import cookie from "react-cookies";
 import routes from "routes.js";
 
 function Header() {
   const location = useLocation();
   const [showModal, setShowModal] = useState(false);
+  const [showLogOutModal, setLogOutModal] = useState(false);
   const [email, setEmail] = useState("");
+  const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
+
+  const handleLogOutShow = () => setLogOutModal(true);
+  const handleLogOutClose = () => setLogOutModal(false);
 
   const mobileSidebarToggle = (e) => {
     e.preventDefault();
@@ -34,6 +39,15 @@ function Header() {
     document.body.appendChild(node);
   };
 
+  const getIdentity = () => {
+    let username = cookie.load("username");
+    if (username !== "") {
+      return username;
+    } else {
+      return "Visitor";
+    }
+  };
+
   const getBrandText = () => {
     for (let i = 0; i < routes.length; i++) {
       if (location.pathname.indexOf(routes[i].layout + routes[i].path) !== -1) {
@@ -44,18 +58,46 @@ function Header() {
   };
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(username);
     console.log(email);
     console.log(password);
+    let cookieSetup = {
+      path: "/",
+      domain: window.location.hostname,
+    };
+    cookie.save("username", username, cookieSetup);
+    cookie.save("email", email, cookieSetup);
+    cookie.save("password", password, cookieSetup);
+    // axios
+    //   .post("/accounts/login")
+    //   .then((res) => {
+
+    //   })
+    //   .error((error) => {
+    //     console.log(error);
+    //   });
+    handleClose();
+  };
+
+  const handleLogOutSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post("/api/login", { email, password });
-      // Handle the response as needed
-      console.log("Login successful:", response.data);
-      handleClose();
-    } catch (error) {
-      console.error("Error logging in:", error);
-      // Handle error as needed
-    }
+    let cookieSetup = {
+      path: "/",
+      domain: window.location.hostname,
+    };
+    cookie.save("username", "", cookieSetup);
+    cookie.save("email", "", cookieSetup);
+    cookie.save("password", "", cookieSetup);
+    // axios
+    //   .post("/accounts/login")
+    //   .then((res) => {
+
+    //   })
+    //   .error((error) => {
+    //     console.log(error);
+    //   });
+    handleLogOutClose();
   };
 
   return (
@@ -96,36 +138,19 @@ function Header() {
                 >
                   Action
                 </Dropdown.Item>
-                <Dropdown.Item
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  Another action
-                </Dropdown.Item>
-                <Dropdown.Item
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  Something
-                </Dropdown.Item>
-                <Dropdown.Item
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  Something else here
-                </Dropdown.Item>
-                <div className="divider"></div>
-                <Dropdown.Item
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  Separated link
-                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </div>
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto" navbar>
+              <Nav.Item>
+                <Nav.Link className="m-0" href="#pablo">
+                  <span className="no-icon">
+                    <b>{getIdentity()}</b>
+                  </span>
+                </Nav.Link>
+              </Nav.Item>
+
               <Nav.Item>
                 <Nav.Link
                   className="m-0"
@@ -143,7 +168,10 @@ function Header() {
                 <Nav.Link
                   className="m-0"
                   href="#pablo"
-                  onClick={(e) => e.preventDefault()}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleLogOutShow();
+                  }}
                 >
                   <span className="no-icon">Log out</span>
                 </Nav.Link>
@@ -159,11 +187,19 @@ function Header() {
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="formBasicUsername">
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                type="text"
+                value={username}
+                onChange={(e) => setUserName(e.target.value)}
+              />
+            </Form.Group>
+
             <Form.Group controlId="formBasicEmail">
-              <Form.Label>Email address</Form.Label>
+              <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
-                placeholder="Enter email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -173,7 +209,6 @@ function Header() {
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
-                placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -181,6 +216,19 @@ function Header() {
 
             <Button variant="primary" type="submit">
               Submit
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
+
+      <Modal show={showLogOutModal} onHide={handleLogOutClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Log Out</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleLogOutSubmit}>
+            <Button variant="primary" type="submit">
+              Confirm
             </Button>
           </Form>
         </Modal.Body>

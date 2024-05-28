@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Container, Row, Col, Form, Button, ListGroup } from "react-bootstrap";
 import axios from "axios";
+import cookie from "react-cookies";
 
 const ChatBox = () => {
   const [message, setMessage] = useState("");
@@ -29,6 +30,12 @@ const ChatBox = () => {
   };
 
   const handleMessageResponse = (input) => {
+    let username = cookie.load("username");
+    let email = cookie.load("email");
+    let password = cookie.load("password");
+    console.log(username);
+    console.log(email);
+    console.log(password);
     axios
       .post("/response/", "user_input=" + input)
       .then((res) => {

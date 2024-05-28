@@ -1,4 +1,5 @@
 import React from "react";
+import cookie from "react-cookies";
 import { useState } from "react";
 // react-bootstrap components
 import { Card, Container, Row, Col } from "react-bootstrap";
