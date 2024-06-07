@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Container, Row, Col, Form, Button, ListGroup } from "react-bootstrap";
 import axios from "axios";
 import cookie from "react-cookies";
+import JobCard from "./JobCard";
 
 const ChatBox = ({ ready, setReady }) => {
   const [message, setMessage] = useState("");
@@ -21,7 +22,7 @@ const ChatBox = ({ ready, setReady }) => {
     event.preventDefault();
     if (message.trim() !== "") {
       let current_messages = messages;
-      current_messages.push({ text: message, fromUser: true });
+      current_messages.push({ content: message, fromUser: true, type: "text" });
       setMessages(current_messages);
       setMessage("");
       scrollToBottom();
@@ -62,34 +63,71 @@ const ChatBox = ({ ready, setReady }) => {
               res.data["back end response"],
               10
             );
-            console.log(short_array);
-            let jobString = "";
 
-            for (let i = 0; i < short_array.length; i++) {
-              jobString += `Job ${i + 1}:\n`;
+            new_message = {
+              type: "jobs",
+              content: "",
+              jobs: short_array,
+            };
 
-              for (let key in short_array[i]) {
-                jobString += `${key}: ${short_array[i][key]}\n`;
-              }
-
-              jobString += "\n";
-            }
-
-            new_message =
-              "I have found some jobs you might be interested in!\n" +
-              jobString;
+            setMessages([...messages, { ...new_message, fromUser: false }]);
           } else {
-            new_message = "Sorry! Please try again later!";
+            new_message = {
+              type: "error",
+              content: "",
+            };
           }
+          setMessages([...messages, { ...new_message, fromUser: false }]);
         } else {
-          new_message = res.data["front end response"];
+          new_message = {
+            type: "text",
+            content: res.data["front end response"],
+          };
+          setMessages([...messages, { ...new_message, fromUser: false }]);
         }
-        setMessages([...messages, { text: new_message, fromUser: false }]);
         setReady(true);
       })
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  const renderMessage = (msg, index) => {
+    switch (msg.type) {
+      case "jobs":
+        return (
+          <div>
+            {msg.jobs.map((job, index) => (
+              <JobCard key={index} index={index} job={job} />
+            ))}
+          </div>
+        );
+      case "error":
+        return (
+          <ListGroup.Item
+            key={index}
+            style={{
+              backgroundColor: msg.fromUser ? "#fdfdfd" : "#fdfdfd",
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            <b>{msg.fromUser ? "User" : "Agent"}</b>: {msg.content}
+          </ListGroup.Item>
+        );
+      case "text":
+      default:
+        return (
+          <ListGroup.Item
+            key={index}
+            style={{
+              backgroundColor: msg.fromUser ? "#fdfdfd" : "#fdfdfd",
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            <b>{msg.fromUser ? "User" : "Agent"}</b>: {msg.content}
+          </ListGroup.Item>
+        );
+    }
   };
 
   return (
@@ -113,14 +151,7 @@ const ChatBox = ({ ready, setReady }) => {
               justifyContent: msg.fromUser ? "flex-end" : "flex-start",
             }}
           >
-            <ListGroup.Item
-              style={{
-                backgroundColor: msg.fromUser ? "#fdfdfd" : "#fdfdfd",
-                whiteSpace: "pre-wrap",
-              }}
-            >
-              {msg.fromUser ? <b>User</b> : <b>Agent</b>}: {msg.text}
-            </ListGroup.Item>
+            {renderMessage(msg, index)}
           </Row>
         ))}
         <div ref={messagesEndRef} />
