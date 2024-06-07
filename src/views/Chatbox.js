@@ -49,22 +49,24 @@ const ChatBox = ({ ready, setReady }) => {
   }
 
   const handleMessageResponse = (input) => {
-    let username = cookie.load("username");
-    let email = cookie.load("email");
-    let password = cookie.load("password");
+    const body = {
+      username: cookie.load("username"),
+      email: cookie.load("email"),
+      password: cookie.load("password"),
+      userinput: input,
+    };
     axios
-      .post("/response/", "user_input=" + input)
+      .post("/response/", body)
       .then((res) => {
-        let new_message = "";
         console.log(res.data);
-        if (res.data["back end response"]) {
-          if (Array.isArray(res.data["back end response"])) {
+        if (res.data["backend response"]) {
+          if (Array.isArray(res.data["backend response"])) {
             let short_array = getRandomItemsFromArray(
-              res.data["back end response"],
+              res.data["backend response"],
               10
             );
 
-            new_message = {
+            let new_message = {
               type: "jobs",
               content: "",
               jobs: short_array,
@@ -72,16 +74,16 @@ const ChatBox = ({ ready, setReady }) => {
 
             setMessages([...messages, { ...new_message, fromUser: false }]);
           } else {
-            new_message = {
+            let new_message = {
               type: "error",
               content: "",
             };
+            setMessages([...messages, { ...new_message, fromUser: false }]);
           }
-          setMessages([...messages, { ...new_message, fromUser: false }]);
         } else {
-          new_message = {
+          let new_message = {
             type: "text",
-            content: res.data["front end response"],
+            content: res.data["frontend response"],
           };
           setMessages([...messages, { ...new_message, fromUser: false }]);
         }
