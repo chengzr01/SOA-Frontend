@@ -15,17 +15,22 @@ import routes from "routes.js";
 
 function Header() {
   const location = useLocation();
-  const [showModal, setShowModal] = useState(false);
+  const [showLogInModal, setLogInModal] = useState(false);
   const [showLogOutModal, setLogOutModal] = useState(false);
+  const [showSignUpModal, setSignUpModal] = useState(false);
+
   const [email, setEmail] = useState("");
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleShow = () => setShowModal(true);
-  const handleClose = () => setShowModal(false);
+  const handleLogInShow = () => setLogInModal(true);
+  const handleLogInClose = () => setLogInModal(false);
 
   const handleLogOutShow = () => setLogOutModal(true);
   const handleLogOutClose = () => setLogOutModal(false);
+
+  const handleSignUpShow = () => setSignUpModal(true);
+  const handleSignUpClose = () => setSignUpModal(false);
 
   const mobileSidebarToggle = (e) => {
     e.preventDefault();
@@ -57,7 +62,37 @@ function Header() {
     return "Brand";
   };
 
-  const handleSubmit = async (e) => {
+  const handleSignUpSubmit = async (e) => {
+    e.preventDefault();
+    console.log(username);
+    console.log(email);
+    console.log(password);
+    let cookieSetup = {
+      path: "/",
+      domain: window.location.hostname,
+    };
+
+    axios
+      .post("/signup/", {
+        username: username,
+        email: email,
+        password: password,
+      })
+      .then((res) => {
+        console.log(res);
+        cookie.save("username", username, cookieSetup);
+        cookie.save("email", email, cookieSetup);
+        cookie.save("password", password, cookieSetup);
+        alert("Signup Success!");
+        handleLogInClose();
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Signup Failure!");
+      });
+  };
+
+  const handleLogInSubmit = async (e) => {
     e.preventDefault();
     console.log(username);
     console.log(email);
@@ -75,7 +110,7 @@ function Header() {
         cookie.save("email", email, cookieSetup);
         cookie.save("password", password, cookieSetup);
         alert("Login Success!");
-        handleClose();
+        handleLogInClose();
       })
       .catch((err) => {
         console.log(err);
@@ -155,10 +190,15 @@ function Header() {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto" navbar>
               <Nav.Item>
-                <Nav.Link className="m-0" href="#pablo">
-                  <span className="no-icon">
-                    <b>{getIdentity()}</b>
-                  </span>
+                <Nav.Link
+                  className="m-0"
+                  href="#pablo"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSignUpShow();
+                  }}
+                >
+                  <span className="no-icon">Sign Up</span>
                 </Nav.Link>
               </Nav.Item>
 
@@ -168,7 +208,7 @@ function Header() {
                   href="#pablo"
                   onClick={(e) => {
                     e.preventDefault();
-                    handleShow();
+                    handleLogInShow();
                   }}
                 >
                   <span className="no-icon">Log in</span>
@@ -187,17 +227,33 @@ function Header() {
                   <span className="no-icon">Log out</span>
                 </Nav.Link>
               </Nav.Item>
+
+              <Nav.Item>
+                <Nav.Link className="m-0">
+                  <span className="no-icon" style={{ color: "lightgray" }}>
+                    |
+                  </span>
+                </Nav.Link>
+              </Nav.Item>
+
+              <Nav.Item>
+                <Nav.Link className="m-0">
+                  <span className="no-icon">
+                    <b>{getIdentity()}</b>
+                  </span>
+                </Nav.Link>
+              </Nav.Item>
             </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>
 
-      <Modal show={showModal} onHide={handleClose}>
+      <Modal show={showLogInModal} onHide={handleLogInClose}>
         <Modal.Header closeButton>
           <Modal.Title>Log In</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleLogInSubmit}>
             <Form.Group controlId="formBasicUsername">
               <Form.Label>Username</Form.Label>
               <Form.Control
@@ -250,6 +306,55 @@ function Header() {
             <Button variant="primary" type="submit">
               Confirm
             </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
+
+      <Modal show={showSignUpModal} onHide={handleSignUpClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Sign Up</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleSignUpSubmit}>
+            <Form.Group controlId="formBasicUsername">
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                type="text"
+                value={username}
+                onChange={(e) => setUserName(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group
+              controlId="formBasicUsername"
+              style={{
+                textAlign: "center",
+                marginTop: "1em",
+                marginBottom: "1em",
+              }}
+            >
+              <Button variant="primary" type="submit">
+                Submit
+              </Button>
+            </Form.Group>
           </Form>
         </Modal.Body>
       </Modal>
