@@ -1,6 +1,7 @@
-import React from "react";
-import cookie from "react-cookies";
+import React, { useState, useEffect } from "react";
 import { Button, Card, Form, Container, Row, Col } from "react-bootstrap";
+import axios from "axios";
+import cookie from "react-cookies";
 
 function User() {
   const get_username = () => {
@@ -20,6 +21,53 @@ function User() {
       return "";
     }
   };
+
+  const [text, setText] = useState("");
+
+  const handleChange = (event) => {
+    setText(event.target.value);
+  };
+
+  const handleRefresh = (event) => {
+    let username = cookie.load("username");
+    let email = cookie.load("email");
+    let password = cookie.load("password");
+    axios
+      .post("/get_description/", {
+        username: username,
+        email: email,
+        password: password,
+      })
+      .then((res) => {
+        setText(res.data.message);
+      })
+      .catch((err) => {
+        alert("Refresh Error!");
+      });
+  };
+
+  const handleUpdate = (event) => {
+    let username = cookie.load("username");
+    let email = cookie.load("email");
+    let password = cookie.load("password");
+    axios
+      .post("/update_description/", {
+        username: username,
+        email: email,
+        password: password,
+        description: text,
+      })
+      .then((res) => {
+        alert("Update Success!");
+      })
+      .catch((err) => {
+        alert("Update Error!");
+      });
+  };
+
+  useEffect(() => {
+    handleRefresh();
+  }, []);
 
   return (
     <>
@@ -52,6 +100,8 @@ function User() {
                         cols="80"
                         rows="4"
                         as="textarea"
+                        value={text}
+                        onChange={handleChange}
                       ></Form.Control>
                     </Form.Group>
                   </Col>
@@ -69,152 +119,32 @@ function User() {
                         className="btn-fill pull-right"
                         type="submit"
                         variant="info"
+                        style={{
+                          textAlign: "center",
+                          margin: "1em",
+                        }}
+                        onClick={handleUpdate}
                       >
                         Update Profile
+                      </Button>
+                      <Button
+                        className="btn-fill pull-right"
+                        type="submit"
+                        variant="info"
+                        style={{
+                          textAlign: "center",
+                          margin: "1em",
+                        }}
+                        onClick={handleRefresh}
+                      >
+                        Refresh Profile
                       </Button>
                     </Form.Group>
                   </Col>
                 </Row>
               </Card.Body>
-              {/* <hr></hr>
-              <div className="button-container mr-auto ml-auto">
-                <Button
-                  className="btn-simple btn-icon"
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                  variant="link"
-                >
-                  <i className="fab fa-facebook-square"></i>
-                </Button>
-                <Button
-                  className="btn-simple btn-icon"
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                  variant="link"
-                >
-                  <i className="fab fa-twitter"></i>
-                </Button>
-                <Button
-                  className="btn-simple btn-icon"
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                  variant="link"
-                >
-                  <i className="fab fa-google-plus-square"></i>
-                </Button>
-              </div> */}
             </Card>
           </Col>
-          {/* <Col md="12">
-            <Card>
-              <Card.Header>
-                <Card.Title as="h4"> </Card.Title>
-              </Card.Header>
-              <Card.Body>
-                <Form>
-                  <Row>
-                    <Col className="pr-1" md="5">
-                      <Form.Group>
-                        <label>Company (disabled)</label>
-                        <Form.Control
-                          defaultValue="Creative Code Inc."
-                          disabled
-                          placeholder="Company"
-                          type="text"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                    <Col className="px-1" md="3">
-                      <Form.Group>
-                        <label>Username</label>
-                        <Form.Control
-                          defaultValue="michael23"
-                          placeholder="Username"
-                          type="text"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                    <Col className="pl-1" md="4">
-                      <Form.Group>
-                        <label htmlFor="exampleInputEmail1">
-                          Email address
-                        </label>
-                        <Form.Control
-                          placeholder="Email"
-                          type="email"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col className="pr-1" md="6">
-                      <Form.Group>
-                        <label>First Name</label>
-                        <Form.Control
-                          defaultValue="Mike"
-                          placeholder="Company"
-                          type="text"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                    <Col className="pl-1" md="6">
-                      <Form.Group>
-                        <label>Last Name</label>
-                        <Form.Control
-                          defaultValue="Andrew"
-                          placeholder="Last Name"
-                          type="text"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md="12">
-                      <Form.Group>
-                        <label>Address</label>
-                        <Form.Control
-                          defaultValue="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
-                          placeholder="Home Address"
-                          type="text"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col className="pr-1" md="4">
-                      <Form.Group>
-                        <label>City</label>
-                        <Form.Control
-                          defaultValue="Mike"
-                          placeholder="City"
-                          type="text"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                    <Col className="px-1" md="4">
-                      <Form.Group>
-                        <label>Country</label>
-                        <Form.Control
-                          defaultValue="Andrew"
-                          placeholder="Country"
-                          type="text"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                    <Col className="pl-1" md="4">
-                      <Form.Group>
-                        <label>Postal Code</label>
-                        <Form.Control
-                          placeholder="ZIP Code"
-                          type="number"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                </Form>
-              </Card.Body>
-            </Card>
-          </Col> */}
         </Row>
       </Container>
     </>
