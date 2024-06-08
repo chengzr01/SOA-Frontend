@@ -10,41 +10,7 @@ import ChatBox from "./Chatbox";
 function Dashboard() {
   const [ready, setReady] = useState(false);
   const [visualization, setVisualization] = useState(`
-   <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>柱状图示例</title>
-    <style>
-        .chart {
-            display: flex;
-            align-items: flex-end;
-            height: 300px;
-            border-left: 2px solid #000;
-            border-bottom: 2px solid #000;
-            padding: 10px;
-        }
-        .bar {
-            width: 50px;
-            margin: 0 10px;
-            background-color: #4CAF50;
-            text-align: center;
-            color: white;
-            font-family: Arial, sans-serif;
-        }
-    </style>
-</head>
-<body>
-    <div class="chart">
-        <div class="bar" style="height: 100px;">10</div>
-        <div class="bar" style="height: 150px;">15</div>
-        <div class="bar" style="height: 200px;">20</div>
-        <div class="bar" style="height: 250px;">25</div>
-        <div class="bar" style="height: 50px;">5</div>
-    </div>
-</body>
-</html>
+<div style=\"display: flex; flex-direction: column; align-items: center; width: 600px; border: 1px solid #ddd; padding: 10px; margin: 10px;\">\n    <h2>Job Information Bar Charts</h2>\n    <div style=\"display: flex; align-items: flex-end; height: 300px; width: 500px;\">\n        <div style=\"width: 50px; margin: 0 5px; background-color: #4CAF50; text-align: center; color: white; height: 100px;\">Mountain View, CA</div>\n        <div style=\"width: 50px; margin: 0 5px; background-color: #4CAF50; text-align: center; color: white; height: 150px;\">YouTube</div>\n        <div style=\"width: 50px; margin: 0 5px; background-color: #4CAF50; text-align: center; color: white; height: 200px;\">Software Engineer III, Machine Learning</div>\n        <div style=\"width: 50px; margin: 0 5px; background-color: #4CAF50; text-align: center; color: white; height: 250px;\">Mid</div>\n        <div style=\"width: 50px; margin: 0 5px; background-color: #4CAF50; text-align: center; color: white; height: 300px;\">1 year</div>\n    </div>\n    <div style=\"display: flex; align-items: flex-end; height: 300px; width: 500px;\">\n        <div style=\"width: 50px; margin: 0 5px; background-color: #4CAF50; text-align: center; color: white; height: 100px;\">Mountain View, CA</div>\n        <div style=\"width: 50px; margin: 0 5px; background-color: #4CAF50; text-align: center; color: white; height: 150px;\">YouTube</div>\n        <div style=\"width: 50px; margin: 0 5px; background-color: #4CAF50; text-align: center; color: white; height: 200px;\">Staff Software Engineer, Mobile (Android)</div>\n        <div style=\"width: 50px; margin: 0 5px; background-color: #4CAF50; text-align: center; color: white; height: 250px;\">Advanced</div>\n        <div style=\"width: 50px; margin: 0 5px; background-color: #4CAF50; text-align: center; color: white; height: 300px;\">8 years</div>\n    </div>\n</div>\n
   `);
   const [summarization, setSummarization] = useState(`
 Here's a summary of various software engineering positions at Google:\n\n

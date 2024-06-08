@@ -66,18 +66,21 @@ function Header() {
       path: "/",
       domain: window.location.hostname,
     };
-    cookie.save("username", username, cookieSetup);
-    cookie.save("email", email, cookieSetup);
-    cookie.save("password", password, cookieSetup);
-    // axios
-    //   .post("/accounts/login")
-    //   .then((res) => {
 
-    //   })
-    //   .error((error) => {
-    //     console.log(error);
-    //   });
-    handleClose();
+    axios
+      .post("/login/", { username: username, email: email, password: password })
+      .then((res) => {
+        console.log(res);
+        cookie.save("username", username, cookieSetup);
+        cookie.save("email", email, cookieSetup);
+        cookie.save("password", password, cookieSetup);
+        alert("Login Success!");
+        handleClose();
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Login Failure!");
+      });
   };
 
   const handleLogOutSubmit = async (e) => {
@@ -86,18 +89,20 @@ function Header() {
       path: "/",
       domain: window.location.hostname,
     };
-    cookie.save("username", "", cookieSetup);
-    cookie.save("email", "", cookieSetup);
-    cookie.save("password", "", cookieSetup);
-    // axios
-    //   .post("/accounts/login")
-    //   .then((res) => {
-
-    //   })
-    //   .error((error) => {
-    //     console.log(error);
-    //   });
-    handleLogOutClose();
+    axios
+      .post("/login/", { username: username, email: email, password: password })
+      .then((res) => {
+        console.log(res);
+        cookie.save("username", "", cookieSetup);
+        cookie.save("email", "", cookieSetup);
+        cookie.save("password", "", cookieSetup);
+        alert("Logout Success!");
+        handleLogOutClose();
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Logout Failure!");
+      });
   };
 
   return (
