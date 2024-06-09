@@ -9,6 +9,7 @@ module.exports = function (app) {
     "/visualize/",
     "/login/",
     "/logout/",
+    "/signup/",
     "/get_description/",
     "/update_description/",
   ];
