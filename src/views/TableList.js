@@ -1,148 +1,175 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import cookie from "react-cookies";
 
-// react-bootstrap components
-import {
-  Badge,
-  Button,
-  Card,
-  Navbar,
-  Nav,
-  Table,
-  Container,
-  Row,
-  Col,
-} from "react-bootstrap";
+import { Card, Table, Container, Row, Col, Pagination } from "react-bootstrap";
 
 function TableList() {
+  const [recommendationReady, setRecommendationReady] = useState(false);
+  const [jobList, setJobList] = useState([]);
+  const [companyList, setCompanyList] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const currentJobs = jobList.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handleRecommendation = (event) => {
+    setRecommendationReady(true);
+    let username = cookie.load("username");
+    let email = cookie.load("email");
+    let password = cookie.load("password");
+    axios
+      .post("/recommendation/", {
+        username: username,
+        email: email,
+        password: password,
+      })
+      .then((res) => {
+        console.log(res.data["backend response"]);
+        setJobList(res.data["backend response"]);
+        setTotalPages(
+          Math.ceil(res.data["backend response"].length / itemsPerPage)
+        );
+        const uniqueCorporates = new Set();
+        res.data["backend response"].forEach((item) => {
+          uniqueCorporates.add(item.corporate);
+        });
+        let newList = Array.from(uniqueCorporates);
+        console.log(newList);
+        setCompanyList(newList);
+      });
+  };
+
+  const getPaginationItems = () => {
+    let start = Math.max(currentPage - 5, 1);
+    let end = Math.min(currentPage + 4, totalPages);
+
+    if (currentPage <= 5) {
+      end = Math.min(10, totalPages);
+    } else if (currentPage > totalPages - 5) {
+      start = Math.max(totalPages - 9, 1);
+    }
+
+    const items = [];
+    for (let i = start; i <= end; i++) {
+      items.push(
+        <Pagination.Item
+          key={i}
+          active={i === currentPage}
+          onClick={() => handlePageChange(i)}
+          style={{ flex: "auto" }}
+        >
+          {i}
+        </Pagination.Item>
+      );
+    }
+    return items;
+  };
+
+  useEffect(() => {
+    if (!recommendationReady) {
+      handleRecommendation();
+    }
+  }, []);
+
   return (
     <>
       <Container fluid>
         <Col md="12">
           <Card className="strpied-tabled-with-hover">
             <Card.Header>
-              <Card.Title as="h4">Potential Positions</Card.Title>
+              <Card.Title as="h4">Positions</Card.Title>
             </Card.Header>
             <Card.Body className="table-full-width table-responsive px-0">
               <Table className="table-hover table-striped">
                 <thead>
                   <tr>
-                    <th className="border-0">ID</th>
-                    <th className="border-0">Position</th>
-                    <th className="border-0">Company</th>
-                    <th className="border-0">Salary</th>
-                    <th className="border-0">City</th>
-                    <th className="border-0">Country</th>
+                    <th className="border-0" style={{ width: "10%" }}>
+                      Index
+                    </th>
+                    <th className="border-0" style={{ width: "20%" }}>
+                      Location
+                    </th>
+                    <th className="border-0" style={{ width: "40%" }}>
+                      Title
+                    </th>
+                    <th className="border-0" style={{ width: "20%" }}>
+                      Company
+                    </th>
+                    <th className="border-0" style={{ width: "10%" }}>
+                      Level
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Research Scientist</td>
-                    <td>Microsoft</td>
-                    <td>$100,000</td>
-                    <td>Redmond, WA</td>
-                    <td>USA</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>Assistant Professor</td>
-                    <td>Carnegie Mellon University</td>
-                    <td>$20,000</td>
-                    <td>Pittsburgh, PA</td>
-                    <td>USA</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>Research Engineer</td>
-                    <td>Google</td>
-                    <td>CHF 100,000</td>
-                    <td>Zurich</td>
-                    <td>Switzerland</td>
-                  </tr>
+                  {currentJobs.map((job, index) => (
+                    <tr key={index}>
+                      <td>{index}</td>
+                      <td>{job["location"]}</td>
+                      <td>{job["job_title"]}</td>
+                      <td>{job["corporate"]}</td>
+                      <td>{job["level"]}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </Table>
+              <Pagination
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                }}
+              >
+                <Pagination.First
+                  onClick={() => handlePageChange(1)}
+                  disabled={currentPage === 1}
+                />
+                <Pagination.Prev
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                />
+                {getPaginationItems()}
+                <Pagination.Next
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                />
+                <Pagination.Last
+                  onClick={() => handlePageChange(totalPages)}
+                  disabled={currentPage === totalPages}
+                />
+              </Pagination>
             </Card.Body>
           </Card>
         </Col>
-        {/* <Col md="12">
-            <Card className="card-plain table-plain-bg">
-              <Card.Header>
-                <Card.Title as="h4">Table on Plain Background</Card.Title>
-                <p className="card-category">
-                  Here is a subtitle for this table
-                </p>
-              </Card.Header>
-              <Card.Body className="table-full-width table-responsive px-0">
-                <Table className="table-hover">
-                  <thead>
-                    <tr>
-                      <th className="border-0">ID</th>
-                      <th className="border-0">Name</th>
-                      <th className="border-0">Salary</th>
-                      <th className="border-0">Country</th>
-                      <th className="border-0">City</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>1</td>
-                      <td>Dakota Rice</td>
-                      <td>$36,738</td>
-                      <td>Niger</td>
-                      <td>Oud-Turnhout</td>
-                    </tr>
-                  </tbody>
-                </Table>
-              </Card.Body>
-            </Card>
-          </Col> */}
         <Col md="12">
           <Card className="card-plain table-plain-bg">
             <Card.Header>
-              <Card.Title as="h4">Potential Companies</Card.Title>
+              <Card.Title as="h4">Companies</Card.Title>
             </Card.Header>
             <Card.Body>
               <Row>
-                <Col xs={4}>
-                  <Card style={{ height: "15em" }}>
-                    <Card.Header>
-                      <Card.Title>Google</Card.Title>
-                    </Card.Header>
-                    <Card.Body>
-                      Here is some information related to Google!
-                    </Card.Body>
-                  </Card>
-                </Col>
-                <Col xs={4}>
-                  <Card style={{ height: "15em" }}>
-                    <Card.Header>
-                      <Card.Title>Google</Card.Title>
-                    </Card.Header>
-                    <Card.Body>
-                      Here is some information related to Google!
-                    </Card.Body>
-                  </Card>
-                </Col>
-                <Col xs={4}>
-                  <Card style={{ height: "15em" }}>
-                    <Card.Header>
-                      <Card.Title>Google</Card.Title>
-                    </Card.Header>
-                    <Card.Body>
-                      Here is some information related to Google!
-                    </Card.Body>
-                  </Card>
-                </Col>
-                <Col xs={4}>
-                  <Card style={{ height: "15em" }}>
-                    <Card.Header>
-                      <Card.Title>Google</Card.Title>
-                    </Card.Header>
-                    <Card.Body>
-                      Here is some information related to Google!
-                    </Card.Body>
-                  </Card>
-                </Col>
+                {companyList.map((company, index) => {
+                  return (
+                    <Col xs={4} key={index}>
+                      <Card style={{ height: "15em" }}>
+                        <Card.Header>
+                          <Card.Title>
+                            <h4>{company}</h4>
+                          </Card.Title>
+                          <Card.Text></Card.Text>
+                        </Card.Header>
+                      </Card>
+                    </Col>
+                  );
+                })}
               </Row>
             </Card.Body>
           </Card>
