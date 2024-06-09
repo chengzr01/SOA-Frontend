@@ -4,7 +4,7 @@ import axios from "axios";
 import cookie from "react-cookies";
 import JobCard from "./JobCard";
 
-const ChatBox = ({ ready, setReady }) => {
+const ChatBox = ({ ready, setReady, jobList, setJobList }) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [trigger, setTrigger] = useState(false);
@@ -66,6 +66,8 @@ const ChatBox = ({ ready, setReady }) => {
               10
             );
 
+            setJobList(short_array);
+            setReady(true);
             let new_message = {
               type: "jobs",
               content: "",
@@ -87,7 +89,6 @@ const ChatBox = ({ ready, setReady }) => {
           };
           setMessages([...messages, { ...new_message, fromUser: false }]);
         }
-        setReady(true);
       })
       .catch((err) => {
         console.log(err);
